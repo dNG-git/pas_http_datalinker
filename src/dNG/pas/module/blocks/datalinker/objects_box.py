@@ -126,7 +126,7 @@ Renders a link.
 			url = Link().build_url(Link.TYPE_RELATIVE, { "m": "datalinker", "a": "related", "dsd": { "oid": data['id'] } })
 
 			xml_parser = XmlParser()
-			_return = "{0}{1}</a>".format(xml_parser.dict2xml_item_encoder({ "tag": "a", "attributes": { "href": url } }, False), XHtmlFormatting.escape(data['title']))
+			_return = "{0}{1}</a>".format(xml_parser.dict_to_xml_item_encoder({ "tag": "a", "attributes": { "href": url } }, False), XHtmlFormatting.escape(data['title']))
 		#
 
 		return _return

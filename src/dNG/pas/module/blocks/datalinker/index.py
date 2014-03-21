@@ -76,8 +76,7 @@ TODO: Check if "load list" for tags with empty mid are feasible.
 		main_id = InputFilter.filter_file_path(self.request.get_dsd("omid", ""))
 		tag = InputFilter.filter_file_path(self.request.get_dsd("otag", ""))
 
-		source = InputFilter.filter_control_chars(self.request.get_dsd("source", "")).strip()
-		source_iline = ("" if (source == "") else Link.query_param_decode(source))
+		source_iline = InputFilter.filter_control_chars(self.request.get_dsd("source", "")).strip()
 
 		L10n.init("pas_http_datalinker")
 		Settings.read_file("{0}/settings/pas_http_datalinker_type_registry.json".format(Settings.get("path_data")))

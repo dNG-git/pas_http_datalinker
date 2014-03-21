@@ -36,7 +36,6 @@ http://www.direct-netware.de/redirect.py?licenses;gpl
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from dNG.pas.data.settings import Settings
 from dNG.pas.data.translatable_exception import TranslatableException
 from dNG.pas.database.connection import Connection
 from dNG.pas.module.blocks.abstract_block import AbstractBlock
@@ -104,6 +103,8 @@ Initializes the database.
 
 :since: v0.1.00
 		"""
+
+		# pylint: disable=broad-except
 
 		try: self.database = Connection.get_instance()
 		except Exception as handled_exception:
