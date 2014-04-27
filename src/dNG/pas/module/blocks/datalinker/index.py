@@ -100,14 +100,14 @@ TODO: Check if "load list" for tags with empty mid are feasible.
 		# TODO: Provide option to create wiki style
 		if (datalinker_object == None): raise TranslatableException("pas_http_datalinker_oid_invalid", 404, _exception = _exception)
 
-		linkertype = datalinker_object.get_linkertype()
-		linkertype_registry_data = Settings.get("pas_http_datalinker_type_registry", { })
+		identity = datalinker_object.get_identity()
+		identity_registry = Settings.get("pas_http_datalinker_identity_registry", { })
 
-		if (linkertype not in linkertype_registry_data): raise TranslatableException("pas_http_datalinker_oid_not_identifiable")
+		if (identity not in identity_registry): raise TranslatableException("pas_http_datalinker_oid_not_identifiable")
 
 		Link.store_clear("servicemenu")
 
-		datalinker_view_iline = linkertype_registry_data[linkertype]['view_iline'].replace("[id]", _id)
+		datalinker_view_iline = identity_registry[identity]['view_iline'].replace("[id]", _id)
 		datalinker_view_iline = re.sub("\\[\\w+\\]", "", datalinker_view_iline)
 
 		redirect_request = PredefinedHttpRequest()
