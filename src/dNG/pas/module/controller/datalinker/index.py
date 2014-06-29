@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.module.blocks.output.Index
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -33,19 +29,18 @@ http://www.direct-netware.de/redirect.py?licenses;gpl
 ----------------------------------------------------------------------------
 #echo(pasHttpDataLinkerVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 import re
 
 from dNG.pas.controller.predefined_http_request import PredefinedHttpRequest
 from dNG.pas.data.data_linker import DataLinker
 from dNG.pas.data.settings import Settings
-from dNG.pas.data.http.translatable_exception import TranslatableException
+from dNG.pas.data.http.translatable_error import TranslatableError
 from dNG.pas.data.text.input_filter import InputFilter
 from dNG.pas.data.text.l10n import L10n
 from dNG.pas.data.xhtml.link import Link
-from dNG.pas.runtime.value_exception import ValueException
+from dNG.pas.database.nothing_matched_exception import NothingMatchedException
 from .module import Module
 
 class Index(Module):
@@ -79,9 +74,18 @@ TODO: Check if "load list" for tags with empty mid are feasible.
 		source_iline = InputFilter.filter_control_chars(self.request.get_dsd("source", "")).strip()
 
 		L10n.init("pas_http_datalinker")
-		Settings.read_file("{0}/settings/pas_http_datalinker_type_registry.json".format(Settings.get("path_data")))
+		Settings.read_file("{0}/settings/pas_http_datalinker_identity_registry.json".format(Settings.get("path_data")))
 
-		if (len(source_iline) > 0): Link.store_set("servicemenu", Link.TYPE_RELATIVE, L10n.get("core_back"), { "__query__": re.sub("\\[\\w+\\]", "", source_iline) }, image = "mini_default_back", priority = 2)
+		if (len(source_iline) > 0):
+		#
+			Link.set_store("servicemenu",
+			               Link.TYPE_RELATIVE,
+			               L10n.get("core_back"),
+			               { "__query__": re.sub("\\_\\_\\w+\\_\\_", "", source_iline) },
+			               image = "mini_default_back",
+			               priority = 2
+			              )
+		#
 
 		datalinker_object = None
 		_exception = None
@@ -95,24 +99,29 @@ TODO: Check if "load list" for tags with empty mid are feasible.
 				_id = datalinker_object.get_id()
 			#
 		#
-		except ValueException as handled_exception: _exception = handled_exception
+		except NothingMatchedException as handled_exception: _exception = handled_exception
 
 		# TODO: Provide option to create wiki style
-		if (datalinker_object == None): raise TranslatableException("pas_http_datalinker_oid_invalid", 404, _exception = _exception)
+		if (datalinker_object == None): raise TranslatableError("pas_http_datalinker_oid_invalid", 404, _exception = _exception)
 
 		identity = datalinker_object.get_identity()
 		identity_registry = Settings.get("pas_http_datalinker_identity_registry", { })
 
-		if (identity not in identity_registry): raise TranslatableException("pas_http_datalinker_oid_not_identifiable")
+		if (identity not in identity_registry): raise TranslatableError("pas_http_datalinker_oid_not_identifiable")
 
-		Link.store_clear("servicemenu")
+		Link.clear_store("servicemenu")
 
-		datalinker_view_iline = identity_registry[identity]['view_iline'].replace("[id]", _id)
-		datalinker_view_iline = re.sub("\\[\\w+\\]", "", datalinker_view_iline)
+		datalinker_view_iline = identity_registry[identity]['view_iline'].replace("__id__", _id)
+		datalinker_view_iline = re.sub("\\_\\_\\w+\\_\\_", "", datalinker_view_iline)
 
 		redirect_request = PredefinedHttpRequest()
 		redirect_request.set_iline(datalinker_view_iline)
-		self.request.redirect(redirect_request)	#
+
+		dsd_dict = self.request.get_dsd_dict()
+		for key in dsd_dict: redirect_request.set_dsd(key, dsd_dict[key])
+
+		self.request.redirect(redirect_request)
+	#
 #
 
 ##j## EOF

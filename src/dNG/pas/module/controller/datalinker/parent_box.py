@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.module.blocks.datalinker.Module
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -33,17 +29,18 @@ http://www.direct-netware.de/redirect.py?licenses;gpl
 ----------------------------------------------------------------------------
 #echo(pasHttpDataLinkerVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
-from dNG.pas.data.translatable_exception import TranslatableException
-from dNG.pas.database.connection import Connection
-from dNG.pas.module.blocks.abstract_block import AbstractBlock
+from dNG.data.xml_parser import XmlParser
+from dNG.pas.data.text.l10n import L10n
+from dNG.pas.data.xhtml.formatting import Formatting as XHtmlFormatting
+from dNG.pas.data.xhtml.link import Link
+from dNG.pas.module.controller.abstract_http import AbstractHttp as AbstractHttpController
 
-class Module(AbstractBlock):
+class ParentBox(AbstractHttpController):
 #
 	"""
-Module for "datalinker"
+"ParentBox" is a navigation element providing a link to the parent entry.
 
 :author:     direct Netware Group
 :copyright:  (C) direct Netware Group - All rights reserved
@@ -57,62 +54,39 @@ Module for "datalinker"
 	def __init__(self):
 	#
 		"""
-Constructor __init__(Module)
+Constructor __init__(ParentBox)
 
 :since: v0.1.00
 		"""
 
-		AbstractBlock.__init__(self)
+		AbstractHttpController.__init__(self)
 
-		self.database = None
-		"""
-Database instance
-		"""
+		L10n.init("pas_http_datalinker")
 	#
 
-	def execute(self):
+	def execute_render(self):
 	#
 		"""
-Execute the requested action.
+Action for "render"
 
 :since: v0.1.00
 		"""
 
-		with self.database: return AbstractBlock.execute(self)
-	#
-
-	def init(self, request, response):
-	#
-		"""
-Initialize block from the given request and response.
-
-:param request: Request object
-:param response: Response object
-
-:since: v0.1.00
-		"""
-
-		AbstractBlock.init(self, request, response)
-		self._init_db()
-	#
-
-	def _init_db(self):
-	#
-		"""
-Initializes the database.
-
-:since: v0.1.00
-		"""
-
-		# pylint: disable=broad-except
-
-		try: self.database = Connection.get_instance()
-		except Exception as handled_exception:
+		if ("id" in self.context):
 		#
-			if (self.log_handler != None): self.log_handler.error(handled_exception)
-		#
+			title =  self.context.get("title", L10n.get("pas_http_core_level_up"))
+			url = Link().build_url(Link.TYPE_RELATIVE, { "m": "datalinker", "a": "related", "dsd": { "oid": self.context['id'] } })
 
-		if (self.database == None): raise TranslatableException("core_database_error")
+			content = "{0}{1}{2}".format(L10n.get("pas_http_datalinker_view_parent_1"),
+			                             XmlParser().dict_to_xml_item_encoder({ "tag": "a",
+			                                                                    "value": XHtmlFormatting.escape(title),
+			                                                                    "attributes": { "href": url }
+			                                                                  }),
+			                             L10n.get("pas_http_datalinker_view_parent_2")
+			                            )
+
+			self.set_action_result("<p class='pagecontent_box pagecontent_datalinker_parent_box'>{0}</p>".format(content))
+		#
 	#
 #
 

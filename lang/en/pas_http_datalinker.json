@@ -1,3 +1,6 @@
 {
- "pas_http_datalinker_objects_additional_content": "Additional content"
+ "pas_http_datalinker_sub_entries_additional_content": "Additional content",
+
+ "pas_http_datalinker_view_parent_1": "Back to ",
+ "pas_http_datalinker_view_parent_2": ""
 }

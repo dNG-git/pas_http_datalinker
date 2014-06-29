@@ -1,6 +1,0 @@
-{
- "pas_http_datalinker_type_registry": {
-  "ContentorCategory": { "view_iline": "m=contentor;dsd=ccid+[id]" },
-  "ContentorDocument": { "view_iline": "m=contentor;dsd=cdid+[id]" }
- }
-}

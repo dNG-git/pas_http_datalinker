@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.module.blocks.output.ObjectsBox
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -33,8 +29,7 @@ http://www.direct-netware.de/redirect.py?licenses;gpl
 ----------------------------------------------------------------------------
 #echo(pasHttpDataLinkerVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 from dNG.data.xml_parser import XmlParser
 from dNG.pas.data.data_linker import DataLinker
@@ -42,12 +37,12 @@ from dNG.pas.data.text.l10n import L10n
 from dNG.pas.data.xhtml.formatting import Formatting as XHtmlFormatting
 from dNG.pas.data.xhtml.link import Link
 from dNG.pas.database.connection import Connection
-from dNG.pas.module.blocks.abstract_block import AbstractBlock
+from dNG.pas.module.controller.abstract_http import AbstractHttp as AbstractHttpController
 
-class ObjectsBox(AbstractBlock):
+class SubEntriesBox(AbstractHttpController):
 #
 	"""
-"ObjectsBox" is a navigation element providing links to embedded objects.
+"SubEntriesBox" is a navigation element providing links to child entries.
 
 :author:     direct Netware Group
 :copyright:  (C) direct Netware Group - All rights reserved
@@ -58,7 +53,7 @@ class ObjectsBox(AbstractBlock):
              GNU General Public License 2
 	"""
 
-	def _get_datalinker_objects_links(self, parent_id):
+	def _get_datalinker_entry_links(self, parent_id):
 	#
 		"""
 Returns a list of rendered links for object children.
@@ -73,11 +68,11 @@ Returns a list of rendered links for object children.
 		#
 			datalinker_parent = DataLinker.load_id(parent_id)
 
-			datalinker_objects = datalinker_parent.get_objects()
+			datalinker_sub_entries = datalinker_parent.get_sub_entries()
 
-			for datalinker_object in datalinker_objects:
+			for datalinker_object in datalinker_sub_entries:
 			#
-				datalinker_object_data = datalinker_object.data_get("id", "title")
+				datalinker_object_data = datalinker_object.get_data_attributes("id", "title")
 				_return.append({ "id": datalinker_object_data['id'], "title": datalinker_object_data['title'] })
 			#
 		#
@@ -98,12 +93,16 @@ Returns a list of rendered links for object children.
 
 		links = [ ]
 
-		if (
-			"parent_id" in self.context and
-			("id" not in self.context or self.context['id'] != self.context['parent_id'])
-		): links.append({ "id": self.context['parent_id'], "title": (self.context['parent_title'] if ("parent_title" in self.context) else L10n.get("pas_http_core_level_up")) })
+		if ("parent_id" in self.context
+		    and (self.context.get("id") != self.context['parent_id'])
+		   ):
+		#
+			links.append({ "id": self.context['parent_id'],
+			               "title": self.context.get("parent_title", L10n.get("pas_http_core_level_up"))
+			             })
+		#
 
-		if ("id" in self.context): links += self._get_datalinker_objects_links(self.context['id'])
+		if ("id" in self.context): links += self._get_datalinker_entry_links(self.context['id'])
 
 		for link in links: _return.append(self._render_link(link))
 
@@ -115,7 +114,7 @@ Returns a list of rendered links for object children.
 		"""
 Renders a link.
 
-:return: (str) Link (X)HTML
+:return: (str) Link XHTML
 :since:  v0.1.01
 		"""
 
@@ -148,13 +147,13 @@ Action for "render"
 
 			if ("type" in self.context):
 			#
-				if (self.context['type'] == DataLinker.OBJECTS_SUB_TYPE_ADDITIONAL_CONTENT): content = "<h1>{0}</h1>".format(L10n.get("pas_http_datalinker_objects_additional_content"))
+				if (self.context['type'] == DataLinker.SUB_ENTRIES_TYPE_ADDITIONAL_CONTENT): content = "<h1>{0}</h1>".format(L10n.get("pas_http_datalinker_sub_entries_additional_content"))
 			#
 			elif ("title" in self.context): content = "<h1>{0}</h1>".format(XHtmlFormatting.escape(self.context['title']))
 
 			content += "<ul><li>{0}</li></ul>".format("</li>\n<li>".join(rendered_links))
 
-			self.set_action_result("<nav class='pagecontent_box pagecontent_datalinker_objects_box'>{0}</nav>".format(content))
+			self.set_action_result("<nav class='pagecontent_box pagecontent_datalinker_sub_entries_box'>{0}</nav>".format(content))
 		#
 	#
 #
