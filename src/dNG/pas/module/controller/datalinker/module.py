@@ -49,22 +49,6 @@ Module for "datalinker"
              GNU General Public License 2
 	"""
 
-	def __init__(self):
-	#
-		"""
-Constructor __init__(Module)
-
-:since: v0.1.00
-		"""
-
-		AbstractHttpController.__init__(self)
-
-		self.database = None
-		"""
-Database instance
-		"""
-	#
-
 	def execute(self):
 	#
 		"""
@@ -73,41 +57,16 @@ Execute the requested action.
 :since: v0.1.00
 		"""
 
-		with self.database: return AbstractHttpController.execute(self)
-	#
-
-	def init(self, request, response):
-	#
-		"""
-Initialize block from the given request and response.
-
-:param request: Request object
-:param response: Response object
-
-:since: v0.1.00
-		"""
-
-		AbstractHttpController.init(self, request, response)
-		self._init_db()
-	#
-
-	def _init_db(self):
-	#
-		"""
-Initializes the database.
-
-:since: v0.1.00
-		"""
-
 		# pylint: disable=broad-except
 
-		try: self.database = Connection.get_instance()
+		try: database = Connection.get_instance()
 		except Exception as handled_exception:
 		#
 			if (self.log_handler != None): self.log_handler.error(handled_exception, context = "pas_http_site")
+			raise TranslatableException("core_database_error", _exception = handled_exception)
 		#
 
-		if (self.database == None): raise TranslatableException("core_database_error")
+		with database: return AbstractHttpController.execute(self)
 	#
 #
 

@@ -76,14 +76,16 @@ TODO: Check if "load list" for tags with empty mid are feasible.
 		L10n.init("pas_http_datalinker")
 		Settings.read_file("{0}/settings/pas_http_datalinker_identity_registry.json".format(Settings.get("path_data")))
 
+		if (self.response.is_supported("html_css_files")): self.response.add_theme_css_file("mini_default_sprite.min.css")
+
 		if (len(source_iline) > 0):
 		#
 			Link.set_store("servicemenu",
 			               Link.TYPE_RELATIVE,
 			               L10n.get("core_back"),
 			               { "__query__": re.sub("\\_\\_\\w+\\_\\_", "", source_iline) },
-			               image = "mini_default_back",
-			               priority = 2
+			               icon = "mini-default-back",
+			               priority = 7
 			              )
 		#
 
