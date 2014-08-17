@@ -20,8 +20,9 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 
 from .abstract import Abstract
 from .data_linker_row import DataLinkerRow
+from .source_callbacks_mixin import SourceCallbacksMixin
 
-class DataLinker(Abstract):
+class DataLinker(Abstract, SourceCallbacksMixin):
 #
 	"""
 "DataLinker" uses a DataLinker entry to iterate over the sub entries.
@@ -46,6 +47,7 @@ Constructor __init__(DataLinker)
 		"""
 
 		Abstract.__init__(self)
+		SourceCallbacksMixin.__init__(self)
 
 		self.entry = entry
 		"""
@@ -71,7 +73,13 @@ python.org: Return the next item from the container.
 		"""
 
 		if (self.sub_entry_iterator == None): self._init_iterator()
-		return DataLinkerRow(next(self.sub_entry_iterator))
+
+		try: return DataLinkerRow(next(self.sub_entry_iterator))
+		except StopIteration:
+		#
+			self.sub_entry_iterator = None
+			raise
+		#
 	#
 
 	def get_row_count(self):
