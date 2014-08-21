@@ -1,6 +1,11 @@
 {
  "pas_http_datalinker_sub_entries_additional_content": "Additional content",
 
+ "pas_http_datalinker_form_error_tag_not_unique": "The defined tag is not unique within this category.",
+
  "pas_http_datalinker_view_parent_1": "Back to ",
- "pas_http_datalinker_view_parent_2": ""
+ "pas_http_datalinker_view_parent_2": "",
+
+ "errors_pas_http_datalinker_oid_invalid": "The defined entry ID is invalid.",
+ "errors_pas_http_datalinker_oid_not_identifiable": "The defined entry ID is not viewable."
 }

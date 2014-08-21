@@ -1,6 +1,11 @@
 {
  "pas_http_datalinker_sub_entries_additional_content": "Weitere Inhalte",
 
+ "pas_http_datalinker_form_error_tag_not_unique": "Der angegebene Tag ist bereits in dieser Kategorie in Verwendung.",
+
  "pas_http_datalinker_view_parent_1": "Zurück zu ",
- "pas_http_datalinker_view_parent_2": ""
+ "pas_http_datalinker_view_parent_2": "",
+
+ "errors_pas_http_datalinker_oid_invalid": "Die angegebene Eintrags-ID ist ungültig.",
+ "errors_pas_http_datalinker_oid_not_identifiable": "Die angegebene Eintrags-ID kann nicht angezeigt werden."
 }
