@@ -122,7 +122,7 @@ Renders a link.
 
 		if ("id" in data and "title" in data):
 		#
-			url = Link().build_url(Link.TYPE_RELATIVE, { "m": "datalinker", "a": "related", "dsd": { "oid": data['id'] } })
+			url = Link().build_url(Link.TYPE_RELATIVE_URL, { "m": "datalinker", "a": "related", "dsd": { "oid": data['id'] } })
 
 			xml_parser = XmlParser()
 			_return = "{0}{1}</a>".format(xml_parser.dict_to_xml_item_encoder({ "tag": "a", "attributes": { "href": url } }, False), XHtmlFormatting.escape(data['title']))

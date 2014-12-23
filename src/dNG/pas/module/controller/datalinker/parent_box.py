@@ -75,7 +75,7 @@ Action for "render"
 		if ("id" in self.context):
 		#
 			title =  self.context.get("title", L10n.get("pas_http_core_level_up"))
-			url = Link().build_url(Link.TYPE_RELATIVE, { "m": "datalinker", "a": "related", "dsd": { "oid": self.context['id'] } })
+			url = Link().build_url(Link.TYPE_RELATIVE_URL, { "m": "datalinker", "a": "related", "dsd": { "oid": self.context['id'] } })
 
 			content = "{0}{1}{2}".format(L10n.get("pas_http_datalinker_view_parent_1"),
 			                             XmlParser().dict_to_xml_item_encoder({ "tag": "a",

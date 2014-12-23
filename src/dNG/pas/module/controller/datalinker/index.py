@@ -67,9 +67,9 @@ TODO: Check if "load list" for tags with empty mid are feasible.
 :since: v0.1.00
 		"""
 
-		_id = InputFilter.filter_file_path(self.request.get_dsd("oid", ""))
-		main_id = InputFilter.filter_file_path(self.request.get_dsd("omid", ""))
-		tag = InputFilter.filter_file_path(self.request.get_dsd("otag", ""))
+		_id = InputFilter.filter_control_chars(self.request.get_dsd("oid", ""))
+		main_id = InputFilter.filter_control_chars(self.request.get_dsd("omid", ""))
+		tag = InputFilter.filter_control_chars(self.request.get_dsd("otag", ""))
 
 		source_iline = InputFilter.filter_control_chars(self.request.get_dsd("source", "")).strip()
 
@@ -81,7 +81,7 @@ TODO: Check if "load list" for tags with empty mid are feasible.
 		if (len(source_iline) > 0):
 		#
 			Link.set_store("servicemenu",
-			               Link.TYPE_RELATIVE,
+			               Link.TYPE_RELATIVE_URL,
 			               L10n.get("core_back"),
 			               { "__query__": re.sub("\\_\\_\\w+\\_\\_", "", source_iline) },
 			               icon = "mini-default-back",
@@ -104,7 +104,7 @@ TODO: Check if "load list" for tags with empty mid are feasible.
 		except NothingMatchedException as handled_exception: _exception = handled_exception
 
 		# TODO: Provide option to create wiki style
-		if (datalinker_object == None): raise TranslatableError("pas_http_datalinker_oid_invalid", 404, _exception = _exception)
+		if (datalinker_object is None): raise TranslatableError("pas_http_datalinker_oid_invalid", 404, _exception = _exception)
 
 		identity = datalinker_object.get_identity()
 		identity_registry = Settings.get("pas_http_datalinker_identity_registry", { })
