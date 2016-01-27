@@ -63,6 +63,20 @@ DataLinker entry to iterate
 		"""
 	#
 
+	def __contains__(self, item):
+	#
+		"""
+python.org: Called to implement membership test operators.
+
+:param item: Item to be looked up
+
+:return: (bool) True if "__getitem__()" call will be successfully
+:since:  v0.1.02
+		"""
+
+		return (type(item) is str)
+	#
+
 	def __getitem__(self, key):
 	#
 		"""
