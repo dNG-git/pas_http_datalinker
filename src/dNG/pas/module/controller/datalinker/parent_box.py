@@ -74,16 +74,26 @@ Action for "render"
 
 		if ("id" in self.context):
 		#
-			title =  self.context.get("title", L10n.get("pas_http_core_level_up"))
+			title = self.context.get("title", "")
+
+			is_title_empty = (title == "")
 			url = Link().build_url(Link.TYPE_RELATIVE_URL, { "m": "datalinker", "a": "related", "dsd": { "oid": self.context['id'] } })
 
-			content = "{0}{1}{2}".format(L10n.get("pas_http_datalinker_view_parent_1"),
-			                             XmlParser().dict_to_xml_item_encoder({ "tag": "a",
-			                                                                    "value": XHtmlFormatting.escape(title),
-			                                                                    "attributes": { "href": url }
-			                                                                  }),
-			                             L10n.get("pas_http_datalinker_view_parent_2")
-			                            )
+			link = XmlParser().dict_to_xml_item_encoder({ "tag": "a",
+			                                              "value": (L10n.get("pas_http_core_level_up")
+			                                                        if (is_title_empty) else
+			                                                        XHtmlFormatting.escape(title)
+			                                                       ),
+			                                              "attributes": { "href": url }
+			                                            })
+
+			content = (link
+			           if (is_title_empty) else
+			           "{0}{1}{2}".format(L10n.get("pas_http_datalinker_view_parent_1"),
+			                              link,
+			                              L10n.get("pas_http_datalinker_view_parent_2")
+			                             )
+			          )
 
 			self.set_action_result("<p class='pagecontent_box pagecontent_datalinker_parent_box'>{0}</p>".format(content))
 		#
