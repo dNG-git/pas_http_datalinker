@@ -31,10 +31,20 @@ https://www.direct-netware.de/redirect?licenses;gpl
 #echo(__FILEPATH__)#
 """
 
+from time import time
+
+from dNG.pas.data.text.l10n import L10n
 from dNG.pas.database.sort_definition import SortDefinition
 from .abstract import Abstract
 from .data_linker_row import DataLinkerRow
+from .inaccessible_row import InaccessibleRow
 from .source_callbacks_mixin import SourceCallbacksMixin
+
+try: from dNG.pas.data.ownable_mixin import OwnableMixin as OwnableInstance
+except ImportError: OwnableInstance = None
+
+try: from dNG.pas.data.session.implementation import Implementation as Session
+except ImportError: Session = None
 
 class DataLinker(SourceCallbacksMixin, Abstract):
 #
@@ -67,6 +77,14 @@ Constructor __init__(DataLinker)
 		"""
 DataLinker entry to iterate
 		"""
+		self.session = None
+		"""
+Session instance used to verify access permissions
+		"""
+		self.session_loaded = (Session is None)
+		"""
+True after the Session instance has been cached
+		"""
 		self.sub_entries_count = None
 		"""
 DataLinker sub entries count
@@ -90,7 +108,27 @@ python.org: Return the next item from the container.
 
 		if (self.sub_entry_iterator is None): self._init_iterator()
 
-		try: return DataLinkerRow(next(self.sub_entry_iterator))
+		try:
+		#
+			sub_entry = next(self.sub_entry_iterator)
+
+			return (DataLinkerRow(sub_entry)
+			        if (OwnableInstance is None
+			            or (not isinstance(sub_entry, OwnableInstance))
+			            or sub_entry.is_readable_for_session_user(self._get_session())
+			           ) else
+			        InaccessibleRow({ "id": "",
+			                          "sub_entries": 0,
+			                          "sub_entries_type": 0,
+			                          "time_sortable": time(),
+			                          "symbol": "",
+			                          "title": L10n.get("pas_http_datalinker_entry_inaccessible"),
+			                          "tag": "",
+			                          "views_count": False,
+			                          "views": 0
+			                        })
+			       )
+		#
 		except StopIteration:
 		#
 			self.sub_entry_iterator = None
@@ -114,6 +152,21 @@ Returns the number of rows.
 		#
 
 		return self.sub_entries_count
+	#
+
+	def _get_session(self):
+	#
+		"""
+Returns the session used to verify access permissions.
+		"""
+
+		if (not self.session_loaded):
+		#
+			self.session = Session.load(session_create = False)
+			self.session_loaded = True
+		#
+
+		return self.session
 	#
 
 	def _init_iterator(self):
@@ -148,6 +201,23 @@ Initializes the iterator on demand.
 
 		source_rows_callback = (self.entry.get_sub_entries if (self.source_rows_callback is None) else self.source_rows_callback)
 		self.sub_entry_iterator = source_rows_callback(self.offset, self.limit)
+	#
+
+	def _is_sort_key_known(self, key):
+	#
+		"""
+Checks if the given sort key is known.
+
+:param key: Key used internally
+
+:return: (bool) Returns true if the sort key is known
+:since:  v0.1.02
+		"""
+
+		_return = Abstract._is_sort_key_known(self, key)
+		if (not _return): _return = self.entry.is_data_attribute_defined(key)
+
+		return _return
 	#
 #
 
