@@ -31,15 +31,11 @@ https://www.direct-netware.de/redirect?licenses;gpl
 #echo(__FILEPATH__)#
 """
 
-from dNG.data.xml_parser import XmlParser
-from dNG.pas.data.data_linker import DataLinker
+from dNG.pas.data.http.translatable_error import TranslatableError
 from dNG.pas.data.text.l10n import L10n
-from dNG.pas.data.xhtml.formatting import Formatting as XHtmlFormatting
-from dNG.pas.data.xhtml.link import Link
-from dNG.pas.database.connection import Connection
-from dNG.pas.module.controller.abstract_http import AbstractHttp as AbstractHttpController
+from .abstract_sub_entries import AbstractSubEntries
 
-class SubEntriesBox(AbstractHttpController):
+class SubEntriesBox(AbstractSubEntries):
 #
 	"""
 "SubEntriesBox" is a navigation element providing links to child entries.
@@ -52,33 +48,6 @@ class SubEntriesBox(AbstractHttpController):
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
 	"""
-
-	def _get_datalinker_entry_links(self, parent_id):
-	#
-		"""
-Returns a list of rendered links for object children.
-
-:return: (list) Links for the service menu
-:since:  v0.1.01
-		"""
-
-		_return = [ ]
-
-		with Connection.get_instance():
-		#
-			datalinker_parent = DataLinker.load_id(parent_id)
-
-			datalinker_sub_entries = datalinker_parent.get_sub_entries()
-
-			for datalinker_object in datalinker_sub_entries:
-			#
-				datalinker_object_data = datalinker_object.get_data_attributes("id", "title")
-				_return.append({ "id": datalinker_object_data['id'], "title": datalinker_object_data['title'] })
-			#
-		#
-
-		return _return
-	#
 
 	def _get_rendered_links(self):
 	#
@@ -102,31 +71,9 @@ Returns a list of rendered links for object children.
 			             })
 		#
 
-		if ("id" in self.context): links += self._get_datalinker_entry_links(self.context['id'])
+		if ("id" in self.context): links += self._get_datalinker_entry_links(self.context['id'], hide_inaccessible = True)
 
 		for link in links: _return.append(self._render_link(link))
-
-		return _return
-	#
-
-	def _render_link(self, data):
-	#
-		"""
-Renders a link.
-
-:return: (str) Link XHTML
-:since:  v0.1.01
-		"""
-
-		_return = ""
-
-		if ("id" in data and "title" in data):
-		#
-			url = Link().build_url(Link.TYPE_RELATIVE_URL, { "m": "datalinker", "a": "related", "dsd": { "oid": data['id'] } })
-
-			xml_parser = XmlParser()
-			_return = "{0}{1}</a>".format(xml_parser.dict_to_xml_item_encoder({ "tag": "a", "attributes": { "href": url } }, False), XHtmlFormatting.escape(data['title']))
-		#
 
 		return _return
 	#
@@ -139,18 +86,15 @@ Action for "render"
 :since: v0.1.00
 		"""
 
+		if (self._is_primary_action()): raise TranslatableError("core_access_denied", 403)
+
 		rendered_links = self._get_rendered_links()
 
 		if (len(rendered_links) > 0):
 		#
-			content = ""
+			title = self._get_sub_entries_title()
 
-			if ("type" in self.context):
-			#
-				if (self.context['type'] == DataLinker.SUB_ENTRIES_TYPE_ADDITIONAL_CONTENT): content = "<h1>{0}</h1>".format(L10n.get("pas_http_datalinker_sub_entries_additional_content"))
-			#
-			elif ("title" in self.context): content = "<h1>{0}</h1>".format(XHtmlFormatting.escape(self.context['title']))
-
+			content = ("" if (title == "") else "<h1>{0}</h1>".format(title))
 			content += "<ul><li>{0}</li></ul>".format("</li>\n<li>".join(rendered_links))
 
 			self.set_action_result("<nav class='pagecontent_box pagecontent_datalinker_sub_entries_box'>{0}</nav>".format(content))
