@@ -1,0 +1,4 @@
+<div class="pagecontent_box pagecontent_overlay_box pagecontent_modal_overlay_box pagecontent_datalinker_sub_entries_list" data-pas-dom-editor-overlay-resize="width">
+	[block:content:table]output.DatabaseTable.render[/block]
+	<p style="text-align: center"><a href="" data-pas-dom-editor-overlay-action="destroy">[rewrite:l10n]core_close[/rewrite]</a></p>
+</div>

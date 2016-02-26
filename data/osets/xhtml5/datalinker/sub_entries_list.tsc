@@ -1,0 +1,10 @@
+<div id="[rewrite:content]id[/rewrite]" class="pagecontent_box pagecontent_datalinker_sub_entries_list">
+	[block:content:table]output.DatabaseTable.render[/block]
+[if:content:view_link_url != ]
+	<p><a href="[rewrite:content]view_link_url[/rewrite]" data-pas-dom-editor-query="[rewrite:content]view_link_query[/rewrite]">[rewrite:safe_content]view_link_content[/rewrite]</a></p><script type="text/javascript"><![CDATA[
+	require([ "pas/HttpJsonApiDomEditor.min" ], function(HttpJsonApiDomEditor) {
+		new HttpJsonApiDomEditor({ id: "[rewrite:content]id[/rewrite]", type: "link_activated" });
+	});
+	]]></script>
+[/if]
+</div>

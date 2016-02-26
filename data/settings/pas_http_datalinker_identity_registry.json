@@ -4,6 +4,7 @@
   "ContentorDocument": { "view_iline": "m=contentor;dsd=cdid+__id__" },
   "DiscussList": { "view_iline": "m=discuss;dsd=dlid+__id__" },
   "DiscussTopic": { "view_iline": "m=discuss;dsd=dtid+__id__" },
-  "DiscussPost": { "view_iline": "m=discuss;dsd=dpid+__id__" }
+  "DiscussPost": { "view_iline": "m=discuss;dsd=dpid+__id__" },
+  "FileCenterEntry": { "view_iline": "m=file_center;dsd=feid+__id__" }
  }
 }

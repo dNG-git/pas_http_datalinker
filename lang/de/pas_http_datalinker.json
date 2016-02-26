@@ -1,8 +1,14 @@
 {
+ "pas_http_datalinker_entry_inaccessible": "Eintrag kann nicht angezeigt werden",
+ "pas_http_datalinker_entry_updated": "Zuletzt aktualisiert",
  "pas_http_datalinker_entry_updated_1": "Zuletzt aktualisiert am ",
  "pas_http_datalinker_entry_updated_2": ".",
  "pas_http_datalinker_sub_entries": "Untereinträge",
  "pas_http_datalinker_sub_entries_additional_content": "Weitere Inhalte",
+ "pas_http_datalinker_view_sub_entries_link_1": "Zeige Untereinträge (",
+ "pas_http_datalinker_view_sub_entries_link_2": " insgesamt)",
+ "pas_http_datalinker_view_sub_entries_additional_content_link_1": "Zeige weitere Inhalte (",
+ "pas_http_datalinker_view_sub_entries_additional_content_link_2": " insgesamt)",
 
  "pas_http_datalinker_form_error_tag_not_unique": "Der angegebene Tag ist bereits in dieser Kategorie in Verwendung.",
 

@@ -1,8 +1,14 @@
 {
+ "pas_http_datalinker_entry_inaccessible": "Entry no accessible",
+ "pas_http_datalinker_entry_updated": "Last updated",
  "pas_http_datalinker_entry_updated_1": "Last updated on ",
  "pas_http_datalinker_entry_updated_2": ".",
  "pas_http_datalinker_sub_entries": "Sub entries",
  "pas_http_datalinker_sub_entries_additional_content": "Additional content",
+ "pas_http_datalinker_view_sub_entries_link_1": "View sub entries (",
+ "pas_http_datalinker_view_sub_entries_link_2": " in total)",
+ "pas_http_datalinker_view_sub_entries_additional_content_link_1": "View additional content (",
+ "pas_http_datalinker_view_sub_entries_additional_content_link_2": " in total)",
 
  "pas_http_datalinker_form_error_tag_not_unique": "The defined tag is not unique within this category.",
 
