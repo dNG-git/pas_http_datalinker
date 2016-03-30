@@ -71,7 +71,7 @@ Action for "index"
 :since: v0.1.02
 		"""
 
-		if (self.request.is_dsd_set('oid')): self.execute_view()
+		if (self.request.is_dsd_set("oid")): self.execute_view()
 	#
 
 	def execute_render(self):
