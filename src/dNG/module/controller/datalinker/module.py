@@ -31,74 +31,42 @@ https://www.direct-netware.de/redirect?licenses;gpl
 #echo(__FILEPATH__)#
 """
 
-from dNG.pas.data.http.translatable_error import TranslatableError
-from dNG.pas.data.text.l10n import L10n
-from .abstract_sub_entries import AbstractSubEntries
+from dNG.data.translatable_exception import TranslatableException
+from dNG.database.connection import Connection
+from dNG.module.controller.abstract_http import AbstractHttp as AbstractHttpController
 
-class SubEntriesBox(AbstractSubEntries):
+class Module(AbstractHttpController):
 #
 	"""
-"SubEntriesBox" is a navigation element providing links to child entries.
+Module for "datalinker"
 
-:author:     direct Netware Group
+:author:     direct Netware Group et al.
 :copyright:  (C) direct Netware Group - All rights reserved
 :package:    pas.http
 :subpackage: datalinker
-:since:      v0.1.00
+:since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
 	"""
 
-	def _get_rendered_links(self):
+	def execute(self):
 	#
 		"""
-Returns a list of rendered links for object children.
+Execute the requested action.
 
-:return: (list) Links for the service menu
-:since:  v0.1.01
+:since: v0.2.00
 		"""
 
-		_return = [ ]
+		# pylint: disable=broad-except
 
-		links = [ ]
-
-		if ("parent_id" in self.context
-		    and (self.context.get("id") != self.context['parent_id'])
-		   ):
+		try: database = Connection.get_instance()
+		except Exception as handled_exception:
 		#
-			links.append({ "id": self.context['parent_id'],
-			               "title": self.context.get("parent_title", L10n.get("pas_http_core_level_up"))
-			             })
+			if (self.log_handler is not None): self.log_handler.error(handled_exception, context = "pas_http_site")
+			raise TranslatableException("core_database_error", _exception = handled_exception)
 		#
 
-		if ("id" in self.context): links += self._get_datalinker_entry_links(self.context['id'], hide_inaccessible = True)
-
-		for link in links: _return.append(self._render_link(link))
-
-		return _return
-	#
-
-	def execute_render(self):
-	#
-		"""
-Action for "render"
-
-:since: v0.1.00
-		"""
-
-		if (self._is_primary_action()): raise TranslatableError("core_access_denied", 403)
-
-		rendered_links = self._get_rendered_links()
-
-		if (len(rendered_links) > 0):
-		#
-			title = self._get_sub_entries_title()
-
-			content = ("" if (title == "") else "<h1>{0}</h1>".format(title))
-			content += "<ul><li>{0}</li></ul>".format("</li>\n<li>".join(rendered_links))
-
-			self.set_action_result("<nav class='pagecontent_box pagecontent_datalinker_sub_entries_box'>{0}</nav>".format(content))
-		#
+		with database: return AbstractHttpController.execute(self)
 	#
 #
 

@@ -33,17 +33,18 @@ https://www.direct-netware.de/redirect?licenses;gpl
 
 from time import time
 
-from dNG.pas.data.text.l10n import L10n
-from dNG.pas.database.sort_definition import SortDefinition
+from dNG.data.text.l10n import L10n
+from dNG.database.sort_definition import SortDefinition
+
 from .abstract import Abstract
 from .data_linker_row import DataLinkerRow
 from .inaccessible_row import InaccessibleRow
 from .source_callbacks_mixin import SourceCallbacksMixin
 
-try: from dNG.pas.data.ownable_mixin import OwnableMixin as OwnableInstance
+try: from dNG.data.ownable_mixin import OwnableMixin as OwnableInstance
 except ImportError: OwnableInstance = None
 
-try: from dNG.pas.data.session.implementation import Implementation as Session
+try: from dNG.data.session.implementation import Implementation as Session
 except ImportError: Session = None
 
 class DataLinker(SourceCallbacksMixin, Abstract):
@@ -51,11 +52,11 @@ class DataLinker(SourceCallbacksMixin, Abstract):
 	"""
 "DataLinker" uses a DataLinker entry to iterate over the sub entries.
 
-:author:     direct Netware Group
+:author:     direct Netware Group et al.
 :copyright:  (C) direct Netware Group - All rights reserved
 :package:    pas.http
 :subpackage: datalinker
-:since:      v0.1.00
+:since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
 	"""
@@ -67,7 +68,7 @@ Constructor __init__(DataLinker)
 
 :param entry: DataLinker entry
 
-:since: v0.1.00
+:since: v0.2.00
 		"""
 
 		Abstract.__init__(self)
@@ -103,7 +104,7 @@ DataLinker sub entry iterator
 python.org: Return the next item from the container.
 
 :return: (object) Result object
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		if (self.sub_entry_iterator is None): self._init_iterator()
@@ -142,7 +143,7 @@ python.org: Return the next item from the container.
 Returns the number of rows.
 
 :return: (int) Number of rows
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		if (self.sub_entries_count is None):
@@ -174,7 +175,7 @@ Returns the session used to verify access permissions.
 		"""
 Initializes the iterator on demand.
 
-:since: v0.1.00
+:since: v0.2.00
 		"""
 
 		sort_list = None
@@ -211,7 +212,7 @@ Checks if the given sort key is known.
 :param key: Key used internally
 
 :return: (bool) Returns true if the sort key is known
-:since:  v0.1.02
+:since:  v0.2.00
 		"""
 
 		_return = Abstract._is_sort_key_known(self, key)

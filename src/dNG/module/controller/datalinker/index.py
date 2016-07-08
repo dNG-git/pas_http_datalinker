@@ -33,14 +33,15 @@ https://www.direct-netware.de/redirect?licenses;gpl
 
 import re
 
-from dNG.pas.controller.predefined_http_request import PredefinedHttpRequest
-from dNG.pas.data.data_linker import DataLinker
-from dNG.pas.data.settings import Settings
-from dNG.pas.data.http.translatable_error import TranslatableError
-from dNG.pas.data.text.input_filter import InputFilter
-from dNG.pas.data.text.l10n import L10n
-from dNG.pas.data.xhtml.link import Link
-from dNG.pas.database.nothing_matched_exception import NothingMatchedException
+from dNG.controller.predefined_http_request import PredefinedHttpRequest
+from dNG.data.data_linker import DataLinker
+from dNG.data.http.translatable_error import TranslatableError
+from dNG.data.settings import Settings
+from dNG.data.text.input_filter import InputFilter
+from dNG.data.text.l10n import L10n
+from dNG.data.xhtml.link import Link
+from dNG.database.nothing_matched_exception import NothingMatchedException
+
 from .module import Module
 
 class Index(Module):
@@ -48,11 +49,11 @@ class Index(Module):
 	"""
 Service for "m=datalinker"
 
-:author:     direct Netware Group
+:author:     direct Netware Group et al.
 :copyright:  (C) direct Netware Group - All rights reserved
 :package:    pas.http
 :subpackage: datalinker
-:since:      v0.1.00
+:since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
 	"""
@@ -64,7 +65,7 @@ Action for "related"
 
 TODO: Check if "load list" for tags with empty mid are feasible.
 
-:since: v0.1.00
+:since: v0.2.00
 		"""
 
 		_id = InputFilter.filter_control_chars(self.request.get_dsd("oid", ""))

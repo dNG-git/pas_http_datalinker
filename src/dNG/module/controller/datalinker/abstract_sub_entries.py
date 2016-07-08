@@ -33,15 +33,15 @@ https://www.direct-netware.de/redirect?licenses;gpl
 
 from time import time
 
+from dNG.data.data_linker import DataLinker
+from dNG.data.text.l10n import L10n
+from dNG.data.xhtml.formatting import Formatting as XHtmlFormatting
+from dNG.data.xhtml.link import Link
 from dNG.data.xml_parser import XmlParser
-from dNG.pas.data.data_linker import DataLinker
-from dNG.pas.data.text.l10n import L10n
-from dNG.pas.data.xhtml.formatting import Formatting as XHtmlFormatting
-from dNG.pas.data.xhtml.link import Link
-from dNG.pas.database.connection import Connection
-from dNG.pas.module.controller.abstract_http import AbstractHttp as AbstractHttpController
+from dNG.database.connection import Connection
+from dNG.module.controller.abstract_http import AbstractHttp as AbstractHttpController
 
-try: from dNG.pas.data.ownable_mixin import OwnableMixin as OwnableInstance
+try: from dNG.data.ownable_mixin import OwnableMixin as OwnableInstance
 except ImportError: OwnableInstance = None
 
 class AbstractSubEntries(AbstractHttpController):
@@ -49,11 +49,11 @@ class AbstractSubEntries(AbstractHttpController):
 	"""
 The "AbstractSubEntries" class provides methods to handle child entries.
 
-:author:     direct Netware Group
+:author:     direct Netware Group et al.
 :copyright:  (C) direct Netware Group - All rights reserved
 :package:    pas.http
 :subpackage: datalinker
-:since:      v0.1.02
+:since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
 	"""
@@ -63,7 +63,7 @@ The "AbstractSubEntries" class provides methods to handle child entries.
 		"""
 Constructor __init__(AbstractSubEntries)
 
-:since: v0.1.02
+:since: v0.2.00
 		"""
 
 		AbstractHttpController.__init__(self)
@@ -78,7 +78,7 @@ Constructor __init__(AbstractSubEntries)
 Returns a list of rendered links for object children.
 
 :return: (list) Links for the service menu
-:since:  v0.1.01
+:since:  v0.2.00
 		"""
 
 		_return = [ ]
@@ -142,7 +142,7 @@ Returns the text reflecting the sub entries type link for more content.
 :param _type: Sub entries type defined
 
 :return: (str) Sub entries link name; empty string if not known
-:since:  v0.1.03
+:since:  v0.2.00
 		"""
 
 		if (not self._is_primary_action() and "type" in self.context):
@@ -165,7 +165,7 @@ Returns the title reflecting the sub entries type.
 :param _type: Sub entries type defined
 
 :return: (str) Sub entries title; empty string if not known
-:since:  v0.1.03
+:since:  v0.2.00
 		"""
 
 		_return = ""
@@ -193,7 +193,7 @@ Returns the title reflecting the sub entries type.
 Renders a link.
 
 :return: (str) Link XHTML
-:since:  v0.1.01
+:since:  v0.2.00
 		"""
 
 		_return = ""

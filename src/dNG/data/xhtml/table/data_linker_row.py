@@ -31,42 +31,64 @@ https://www.direct-netware.de/redirect?licenses;gpl
 #echo(__FILEPATH__)#
 """
 
-from dNG.pas.data.translatable_exception import TranslatableException
-from dNG.pas.database.connection import Connection
-from dNG.pas.module.controller.abstract_http import AbstractHttp as AbstractHttpController
+from .abstract_row import AbstractRow
 
-class Module(AbstractHttpController):
+class DataLinkerRow(AbstractRow):
 #
 	"""
-Module for "datalinker"
+"DataLinkerRow" provides properties mapped to DataLinker entry attributes.
 
-:author:     direct Netware Group
+:author:     direct Netware Group et al.
 :copyright:  (C) direct Netware Group - All rights reserved
 :package:    pas.http
 :subpackage: datalinker
-:since:      v0.1.00
+:since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
 	"""
 
-	def execute(self):
+	def __init__(self, entry):
 	#
 		"""
-Execute the requested action.
+Constructor __init__(DataLinkerRow)
 
-:since: v0.1.00
+:param entry: DataLinker entry
+
+:since: v0.2.00
 		"""
 
-		# pylint: disable=broad-except
+		self.entry = entry
+		"""
+DataLinker entry to iterate
+		"""
+	#
 
-		try: database = Connection.get_instance()
-		except Exception as handled_exception:
-		#
-			if (self.log_handler is not None): self.log_handler.error(handled_exception, context = "pas_http_site")
-			raise TranslatableException("core_database_error", _exception = handled_exception)
-		#
+	def __contains__(self, item):
+	#
+		"""
+python.org: Called to implement membership test operators.
 
-		with database: return AbstractHttpController.execute(self)
+:param item: Item to be looked up
+
+:return: (bool) True if "__getitem__()" call will be successfully
+:since:  v0.2.00
+		"""
+
+		return (type(item) is str)
+	#
+
+	def __getitem__(self, key):
+	#
+		"""
+python.org: Called to implement evaluation of self[key].
+
+:param name: Attribute name
+
+:return: (mixed) Attribute value
+:since:  v0.2.00
+		"""
+
+		return self.entry.get_data_attributes(key)[key]
 	#
 #
 

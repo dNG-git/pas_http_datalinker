@@ -33,20 +33,21 @@ https://www.direct-netware.de/redirect?licenses;gpl
 
 import re
 
-from dNG.pas.data.data_linker import DataLinker
-from dNG.pas.data.hookable_settings import HookableSettings
-from dNG.pas.data.settings import Settings
-from dNG.pas.data.ownable_mixin import OwnableMixin as OwnableInstance
-from dNG.pas.data.http.translatable_error import TranslatableError
-from dNG.pas.data.text.date_time import DateTime
-from dNG.pas.data.text.input_filter import InputFilter
-from dNG.pas.data.text.l10n import L10n
-from dNG.pas.data.xhtml.formatting import Formatting as XHtmlFormatting
-from dNG.pas.data.xhtml.link import Link
-from dNG.pas.data.xhtml.table.data_linker import DataLinker as DataLinkerTable
-from dNG.pas.data.xhtml.oset.file_parser import FileParser
-from dNG.pas.module.controller.services.abstract_dom_editor import AbstractDomEditor
-from dNG.pas.runtime.value_exception import ValueException
+from dNG.data.data_linker import DataLinker
+from dNG.data.hookable_settings import HookableSettings
+from dNG.data.http.translatable_error import TranslatableError
+from dNG.data.ownable_mixin import OwnableMixin as OwnableInstance
+from dNG.data.settings import Settings
+from dNG.data.text.date_time import DateTime
+from dNG.data.text.input_filter import InputFilter
+from dNG.data.text.l10n import L10n
+from dNG.data.xhtml.formatting import Formatting as XHtmlFormatting
+from dNG.data.xhtml.link import Link
+from dNG.data.xhtml.oset.file_parser import FileParser
+from dNG.data.xhtml.table.data_linker import DataLinker as DataLinkerTable
+from dNG.module.controller.services.abstract_dom_editor import AbstractDomEditor
+from dNG.runtime.value_exception import ValueException
+
 from .abstract_sub_entries import AbstractSubEntries
 
 class SubEntriesList(AbstractDomEditor, AbstractSubEntries):
@@ -54,11 +55,11 @@ class SubEntriesList(AbstractDomEditor, AbstractSubEntries):
 	"""
 "SubEntriesList" provides a dynamic list of child entries.
 
-:author:     direct Netware Group
+:author:     direct Netware Group et al.
 :copyright:  (C) direct Netware Group - All rights reserved
 :package:    pas.http
 :subpackage: datalinker
-:since:      v0.1.02
+:since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
 	"""
@@ -68,7 +69,7 @@ class SubEntriesList(AbstractDomEditor, AbstractSubEntries):
 		"""
 Action for "index"
 
-:since: v0.1.02
+:since: v0.2.00
 		"""
 
 		if (self.request.is_dsd_set("oid")): self.execute_view()
@@ -79,7 +80,7 @@ Action for "index"
 		"""
 Action for "render"
 
-:since: v0.1.02
+:since: v0.2.00
 		"""
 
 		if (self._is_primary_action()): raise TranslatableError("core_access_denied", 403)
@@ -128,7 +129,7 @@ Action for "render"
 		"""
 Action for "view"
 
-:since: v0.1.02
+:since: v0.2.00
 		"""
 
 		_id = InputFilter.filter_control_chars(self.request.get_dsd("oid", ""))
@@ -190,7 +191,7 @@ Action for "view"
 		"""
 @TODO
 
-:since: v0.1.02
+:since: v0.2.00
 		"""
 
 		datalinker_object = DataLinker.load_id(_id)
@@ -240,7 +241,7 @@ Returns content used for time_sortable cell rendering.
 :param column_definition: Column definition for the cell
 
 :return: (dict) Content used for rendering
-:since:  v0.1.01
+:since:  v0.2.00
 		"""
 
 		return XHtmlFormatting.escape(DateTime.format_l10n(DateTime.TYPE_DATE_TIME_LONG, content['time_sortable']))
@@ -255,7 +256,7 @@ Returns content used for title cell rendering.
 :param column_definition: Column definition for the cell
 
 :return: (dict) Content used for rendering
-:since:  v0.1.01
+:since:  v0.2.00
 		"""
 
 		return self._render_link(content)

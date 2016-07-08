@@ -31,24 +31,24 @@ https://www.direct-netware.de/redirect?licenses;gpl
 #echo(__FILEPATH__)#
 """
 
+from dNG.data.http.translatable_error import TranslatableError
+from dNG.data.text.l10n import L10n
+from dNG.data.xhtml.formatting import Formatting as XHtmlFormatting
+from dNG.data.xhtml.link import Link
 from dNG.data.xml_parser import XmlParser
-from dNG.pas.data.http.translatable_error import TranslatableError
-from dNG.pas.data.text.l10n import L10n
-from dNG.pas.data.xhtml.formatting import Formatting as XHtmlFormatting
-from dNG.pas.data.xhtml.link import Link
-from dNG.pas.module.controller.abstract_http import AbstractHttp as AbstractHttpController
-from dNG.pas.runtime.value_exception import ValueException
+from dNG.module.controller.abstract_http import AbstractHttp as AbstractHttpController
+from dNG.runtime.value_exception import ValueException
 
 class ParentBox(AbstractHttpController):
 #
 	"""
 "ParentBox" is a navigation element providing a link to the parent entry.
 
-:author:     direct Netware Group
+:author:     direct Netware Group et al.
 :copyright:  (C) direct Netware Group - All rights reserved
 :package:    pas.http
 :subpackage: datalinker
-:since:      v0.1.00
+:since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
 	"""
@@ -58,7 +58,7 @@ class ParentBox(AbstractHttpController):
 		"""
 Constructor __init__(ParentBox)
 
-:since: v0.1.00
+:since: v0.2.00
 		"""
 
 		AbstractHttpController.__init__(self)
@@ -71,7 +71,7 @@ Constructor __init__(ParentBox)
 		"""
 Action for "render"
 
-:since: v0.1.00
+:since: v0.2.00
 		"""
 
 		if (self._is_primary_action()): raise TranslatableError("core_access_denied", 403)

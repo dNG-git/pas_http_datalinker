@@ -31,64 +31,75 @@ https://www.direct-netware.de/redirect?licenses;gpl
 #echo(__FILEPATH__)#
 """
 
-from .abstract_row import AbstractRow
+from dNG.data.http.translatable_error import TranslatableError
+from dNG.data.text.l10n import L10n
 
-class DataLinkerRow(AbstractRow):
+from .abstract_sub_entries import AbstractSubEntries
+
+class SubEntriesBox(AbstractSubEntries):
 #
 	"""
-"DataLinkerRow" provides properties mapped to DataLinker entry attributes.
+"SubEntriesBox" is a navigation element providing links to child entries.
 
-:author:     direct Netware Group
+:author:     direct Netware Group et al.
 :copyright:  (C) direct Netware Group - All rights reserved
 :package:    pas.http
 :subpackage: datalinker
-:since:      v0.1.00
+:since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
 	"""
 
-	def __init__(self, entry):
+	def _get_rendered_links(self):
 	#
 		"""
-Constructor __init__(DataLinkerRow)
+Returns a list of rendered links for object children.
 
-:param entry: DataLinker entry
-
-:since: v0.1.00
+:return: (list) Links for the service menu
+:since:  v0.2.00
 		"""
 
-		self.entry = entry
-		"""
-DataLinker entry to iterate
-		"""
+		_return = [ ]
+
+		links = [ ]
+
+		if ("parent_id" in self.context
+		    and (self.context.get("id") != self.context['parent_id'])
+		   ):
+		#
+			links.append({ "id": self.context['parent_id'],
+			               "title": self.context.get("parent_title", L10n.get("pas_http_core_level_up"))
+			             })
+		#
+
+		if ("id" in self.context): links += self._get_datalinker_entry_links(self.context['id'], hide_inaccessible = True)
+
+		for link in links: _return.append(self._render_link(link))
+
+		return _return
 	#
 
-	def __contains__(self, item):
+	def execute_render(self):
 	#
 		"""
-python.org: Called to implement membership test operators.
+Action for "render"
 
-:param item: Item to be looked up
-
-:return: (bool) True if "__getitem__()" call will be successfully
-:since:  v0.1.02
+:since: v0.2.00
 		"""
 
-		return (type(item) is str)
-	#
+		if (self._is_primary_action()): raise TranslatableError("core_access_denied", 403)
 
-	def __getitem__(self, key):
-	#
-		"""
-python.org: Called to implement evaluation of self[key].
+		rendered_links = self._get_rendered_links()
 
-:param name: Attribute name
+		if (len(rendered_links) > 0):
+		#
+			title = self._get_sub_entries_title()
 
-:return: (mixed) Attribute value
-:since:  v0.1.00
-		"""
+			content = ("" if (title == "") else "<h1>{0}</h1>".format(title))
+			content += "<ul><li>{0}</li></ul>".format("</li>\n<li>".join(rendered_links))
 
-		return self.entry.get_data_attributes(key)[key]
+			self.set_action_result("<nav class='pagecontent_box pagecontent_datalinker_sub_entries_box'>{0}</nav>".format(content))
+		#
 	#
 #
 
