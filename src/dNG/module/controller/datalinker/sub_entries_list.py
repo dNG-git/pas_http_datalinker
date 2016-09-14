@@ -189,9 +189,14 @@ Action for "view"
 	def _get_datalinker_object_and_content(self, _id, limit = -1):
 	#
 		"""
-@TODO
+Returns a tuple containing the DataLinker object and a content dictionary
+ready for output.
 
-:since: v0.2.00
+:param _id: DataLinker ID
+:param limit: Maximum number of DataLinker sub entries
+
+:return: (tuple) DataLinker object and content dictionary
+:since:  v0.2.00
 		"""
 
 		datalinker_object = DataLinker.load_id(_id)
