@@ -121,7 +121,11 @@ TODO: Check if "load list" for tags with empty mid are feasible.
 		redirect_request.set_iline(datalinker_view_iline)
 
 		dsd_dict = self.request.get_dsd_dict()
-		for key in dsd_dict: redirect_request.set_dsd(key, dsd_dict[key])
+
+		for key in dsd_dict:
+		#
+			if (key not in ( "oid", "omid", "otag" )): redirect_request.set_dsd(key, dsd_dict[key])
+		#
 
 		self.request.redirect(redirect_request)
 	#
