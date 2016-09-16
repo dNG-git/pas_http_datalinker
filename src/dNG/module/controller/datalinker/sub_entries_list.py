@@ -37,14 +37,15 @@ from dNG.data.data_linker import DataLinker
 from dNG.data.hookable_settings import HookableSettings
 from dNG.data.http.translatable_error import TranslatableError
 from dNG.data.ownable_mixin import OwnableMixin as OwnableInstance
+from dNG.data.rfc.basics import Basics as RfcBasics
 from dNG.data.settings import Settings
 from dNG.data.text.date_time import DateTime
 from dNG.data.text.input_filter import InputFilter
 from dNG.data.text.l10n import L10n
-from dNG.data.xhtml.formatting import Formatting as XHtmlFormatting
 from dNG.data.xhtml.link import Link
 from dNG.data.xhtml.oset.file_parser import FileParser
 from dNG.data.xhtml.table.data_linker import DataLinker as DataLinkerTable
+from dNG.data.xml_parser import XmlParser
 from dNG.module.controller.services.abstract_dom_editor import AbstractDomEditor
 from dNG.runtime.value_exception import ValueException
 
@@ -240,7 +241,7 @@ ready for output.
 	def _get_time_sortable_cell_content(self, content, column_definition):
 	#
 		"""
-Returns content used for time_sortable cell rendering.
+Returns content used for "time_sortable" cell rendering.
 
 :param content: Content already defined
 :param column_definition: Column definition for the cell
@@ -249,7 +250,11 @@ Returns content used for time_sortable cell rendering.
 :since:  v0.2.00
 		"""
 
-		return XHtmlFormatting.escape(DateTime.format_l10n(DateTime.TYPE_DATE_TIME_LONG, content['time_sortable']))
+		time_attributes = { "tag": "time", "attributes": { "datetime": "{0}+00:00".format(RfcBasics.get_iso8601_datetime(content['time_sortable'])) } }
+
+		return "{0}{1}</time>".format(XmlParser().dict_to_xml_item_encoder(time_attributes, False),
+			                          DateTime.format_l10n(DateTime.TYPE_FUZZY_MONTH, content['time_sortable'])
+			                         )
 	#
 
 	def _get_title_cell_content(self, content, column_definition):
