@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -45,8 +44,7 @@ from dNG.database.nothing_matched_exception import NothingMatchedException
 from .module import Module
 
 class Index(Module):
-#
-	"""
+    """
 Service for "m=datalinker"
 
 :author:     direct Netware Group et al.
@@ -56,79 +54,71 @@ Service for "m=datalinker"
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
-	"""
+    """
 
-	def execute_related(self):
-	#
-		"""
+    def execute_related(self):
+        """
 Action for "related"
 
 TODO: Check if "load list" for tags with empty mid are feasible.
 
 :since: v0.2.00
-		"""
+        """
 
-		_id = InputFilter.filter_control_chars(self.request.get_dsd("oid", ""))
-		main_id = InputFilter.filter_control_chars(self.request.get_dsd("omid", ""))
-		tag = InputFilter.filter_control_chars(self.request.get_dsd("otag", ""))
+        _id = InputFilter.filter_control_chars(self.request.get_dsd("oid", ""))
+        main_id = InputFilter.filter_control_chars(self.request.get_dsd("omid", ""))
+        tag = InputFilter.filter_control_chars(self.request.get_dsd("otag", ""))
 
-		source_iline = InputFilter.filter_control_chars(self.request.get_dsd("source", "")).strip()
+        source_iline = InputFilter.filter_control_chars(self.request.get_dsd("source", "")).strip()
 
-		L10n.init("pas_http_datalinker")
-		Settings.read_file("{0}/settings/pas_http_datalinker_identity_registry.json".format(Settings.get("path_data")))
+        L10n.init("pas_http_datalinker")
+        Settings.read_file("{0}/settings/pas_http_datalinker_identity_registry.json".format(Settings.get("path_data")))
 
-		if (self.response.is_supported("html_css_files")): self.response.add_theme_css_file("mini_default_sprite.min.css")
+        if (self.response.is_supported("html_css_files")): self.response.add_theme_css_file("mini_default_sprite.min.css")
 
-		if (len(source_iline) > 0):
-		#
-			Link.set_store("servicemenu",
-			               Link.TYPE_RELATIVE_URL,
-			               L10n.get("core_back"),
-			               { "__query__": re.sub("\\_\\_\\w+\\_\\_", "", source_iline) },
-			               icon = "mini-default-back",
-			               priority = 7
-			              )
-		#
+        if (len(source_iline) > 0):
+            Link.set_store("servicemenu",
+                           Link.TYPE_RELATIVE_URL,
+                           L10n.get("core_back"),
+                           { "__query__": re.sub("\\_\\_\\w+\\_\\_", "", source_iline) },
+                           icon = "mini-default-back",
+                           priority = 7
+                          )
+        #
 
-		datalinker_object = None
-		_exception = None
+        datalinker_object = None
+        _exception = None
 
-		try:
-		#
-			if (len(_id) > 0): datalinker_object = DataLinker.load_id(_id)
-			elif (len(tag) > 0 and len(main_id) > 0):
-			#
-				datalinker_object = DataLinker.load_tag(tag, main_id)
-				_id = datalinker_object.get_id()
-			#
-		#
-		except NothingMatchedException as handled_exception: _exception = handled_exception
+        try:
+            if (len(_id) > 0): datalinker_object = DataLinker.load_id(_id)
+            elif (len(tag) > 0 and len(main_id) > 0):
+                datalinker_object = DataLinker.load_tag(tag, main_id)
+                _id = datalinker_object.get_id()
+            #
+        except NothingMatchedException as handled_exception: _exception = handled_exception
 
-		# TODO: Provide option to create wiki style
-		if (datalinker_object is None): raise TranslatableError("pas_http_datalinker_oid_invalid", 404, _exception = _exception)
+        # TODO: Provide option to create wiki style
+        if (datalinker_object is None): raise TranslatableError("pas_http_datalinker_oid_invalid", 404, _exception = _exception)
 
-		identity = datalinker_object.get_identity()
-		identity_registry = Settings.get("pas_http_datalinker_identity_registry", { })
+        identity = datalinker_object.get_identity()
+        identity_registry = Settings.get("pas_http_datalinker_identity_registry", { })
 
-		if (identity not in identity_registry): raise TranslatableError("pas_http_datalinker_oid_not_identifiable")
+        if (identity not in identity_registry): raise TranslatableError("pas_http_datalinker_oid_not_identifiable")
 
-		Link.clear_store("servicemenu")
+        Link.clear_store("servicemenu")
 
-		datalinker_view_iline = identity_registry[identity]['view_iline'].replace("__id__", _id)
-		datalinker_view_iline = re.sub("\\_\\_\\w+\\_\\_", "", datalinker_view_iline)
+        datalinker_view_iline = identity_registry[identity]['view_iline'].replace("__id__", _id)
+        datalinker_view_iline = re.sub("\\_\\_\\w+\\_\\_", "", datalinker_view_iline)
 
-		redirect_request = PredefinedHttpRequest()
-		redirect_request.set_iline(datalinker_view_iline)
+        redirect_request = PredefinedHttpRequest()
+        redirect_request.set_iline(datalinker_view_iline)
 
-		dsd_dict = self.request.get_dsd_dict()
+        dsd_dict = self.request.get_dsd_dict()
 
-		for key in dsd_dict:
-		#
-			if (key not in ( "oid", "omid", "otag" )): redirect_request.set_dsd(key, dsd_dict[key])
-		#
+        for key in dsd_dict:
+            if (key not in ( "oid", "omid", "otag" )): redirect_request.set_dsd(key, dsd_dict[key])
+        #
 
-		self.request.redirect(redirect_request)
-	#
+        self.request.redirect(redirect_request)
+    #
 #
-
-##j## EOF

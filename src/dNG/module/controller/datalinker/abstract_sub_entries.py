@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -45,8 +44,7 @@ try: from dNG.data.ownable_mixin import OwnableMixin as OwnableInstance
 except ImportError: OwnableInstance = None
 
 class AbstractSubEntries(AbstractHttpController):
-#
-	"""
+    """
 The "AbstractSubEntries" class provides methods to handle child entries.
 
 :author:     direct Netware Group et al.
@@ -56,86 +54,80 @@ The "AbstractSubEntries" class provides methods to handle child entries.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
-	"""
+    """
 
-	def __init__(self):
-	#
-		"""
+    def __init__(self):
+        """
 Constructor __init__(AbstractSubEntries)
 
 :since: v0.2.00
-		"""
+        """
 
-		AbstractHttpController.__init__(self)
+        AbstractHttpController.__init__(self)
 
-		L10n.init("pas_http_datalinker")
-	#
+        L10n.init("pas_http_datalinker")
+    #
 
-	@Connection.wrap_callable
-	def _get_datalinker_entry_links(self, parent_id, offset = 0, limit = -1, hide_inaccessible = False):
-	#
-		"""
+    @Connection.wrap_callable
+    def _get_datalinker_entry_links(self, parent_id, offset = 0, limit = -1, hide_inaccessible = False):
+        """
 Returns a list of rendered links for object children.
 
 :return: (list) Links for the service menu
 :since:  v0.2.00
-		"""
+        """
 
-		_return = [ ]
+        _return = [ ]
 
-		datalinker_parent = DataLinker.load_id(parent_id)
-		session = (self.request.get_session() if (self.request.is_supported("session")) else None)
+        datalinker_parent = DataLinker.load_id(parent_id)
+        session = (self.request.get_session() if (self.request.is_supported("session")) else None)
 
-		datalinker_sub_entries = (datalinker_parent.get_sub_entries()
-		                          if (OwnableInstance is None
-		                              or (not isinstance(datalinker_parent, OwnableInstance))
-		                              or datalinker_parent.is_readable_for_session_user(session)
-		                             ) else
-		                          [ ]
-		                         )
+        datalinker_sub_entries = (datalinker_parent.get_sub_entries()
+                                  if (OwnableInstance is None
+                                      or (not isinstance(datalinker_parent, OwnableInstance))
+                                      or datalinker_parent.is_readable_for_session_user(session)
+                                     ) else
+                                  [ ]
+                                 )
 
-		inaccessible_entry = { "id": "",
-		                       "sub_entries": 0,
-		                       "sub_entries_type": 0,
-		                       "time_sortable": time(),
-		                       "symbol": "",
-		                       "title": L10n.get("pas_http_datalinker_entry_inaccessible"),
-		                       "tag": "",
-		                       "views_count": False,
-		                       "views": 0
-		                     }
+        inaccessible_entry = { "id": "",
+                               "sub_entries": 0,
+                               "sub_entries_type": 0,
+                               "time_sortable": time(),
+                               "symbol": "",
+                               "title": L10n.get("pas_http_datalinker_entry_inaccessible"),
+                               "tag": "",
+                               "views_count": False,
+                               "views": 0
+                             }
 
-		for datalinker_object in datalinker_sub_entries:
-		#
-			is_readable = (OwnableInstance is None
-			               or (not isinstance(datalinker_object, OwnableInstance))
-			               or datalinker_object.is_readable_for_session_user(session)
-			              )
+        for datalinker_object in datalinker_sub_entries:
+            is_readable = (OwnableInstance is None
+                           or (not isinstance(datalinker_object, OwnableInstance))
+                           or datalinker_object.is_readable_for_session_user(session)
+                          )
 
-			if (is_readable):
-			#
-				datalinker_object_data = datalinker_object.get_data_attributes("id",
-				                                                               "sub_entries",
-				                                                               "sub_entries_type",
-				                                                               "time_sortable",
-				                                                               "symbol",
-				                                                               "title",
-				                                                               "tag",
-				                                                               "views_count",
-				                                                               "views"
-				                                                              )
+            if (is_readable):
+                datalinker_object_data = datalinker_object.get_data_attributes("id",
+                                                                               "sub_entries",
+                                                                               "sub_entries_type",
+                                                                               "time_sortable",
+                                                                               "symbol",
+                                                                               "title",
+                                                                               "tag",
+                                                                               "views_count",
+                                                                               "views"
+                                                                              )
 
-				_return.append(datalinker_object_data.copy())
-			#
-			elif (not hide_inaccessible): _return.append(inaccessible_entry.copy())
-		#
+                _return.append(datalinker_object_data.copy())
+            elif (not hide_inaccessible): _return.append(inaccessible_entry.copy())
+        #
 
-		return _return
-	#
+        return _return
+    #
 
-	def _get_sub_entries_link_content(self, count, _type = None):
-	#
-		"""
+    def _get_sub_entries_link_content(self, count, _type = None):
+        """
 Returns the text reflecting the sub entries type link for more content.
 
 :param count: 
@@ -143,71 +135,61 @@ Returns the text reflecting the sub entries type link for more content.
 
 :return: (str) Sub entries link name; empty string if not known
 :since:  v0.2.00
-		"""
+        """
 
-		if (not self._is_primary_action() and "type" in self.context):
-		#
-			if (self.context['type'] == DataLinker.SUB_ENTRIES_TYPE_ADDITIONAL_CONTENT): _type = self.context['type']
-		#
+        if (not self._is_primary_action() and "type" in self.context):
+            if (self.context['type'] == DataLinker.SUB_ENTRIES_TYPE_ADDITIONAL_CONTENT): _type = self.context['type']
+        #
 
-		l10n_base_id = "pas_http_datalinker_view_sub_entries_link"
+        l10n_base_id = "pas_http_datalinker_view_sub_entries_link"
 
-		if (_type == DataLinker.SUB_ENTRIES_TYPE_ADDITIONAL_CONTENT): l10n_base_id = "pas_http_datalinker_view_sub_entries_additional_content_link"
+        if (_type == DataLinker.SUB_ENTRIES_TYPE_ADDITIONAL_CONTENT): l10n_base_id = "pas_http_datalinker_view_sub_entries_additional_content_link"
 
-		return "{0}{1:d}{2}".format(L10n.get(l10n_base_id + "_1"), count, L10n.get(l10n_base_id + "_2"))
-	#
+        return "{0}{1:d}{2}".format(L10n.get(l10n_base_id + "_1"), count, L10n.get(l10n_base_id + "_2"))
+    #
 
-	def _get_sub_entries_title(self, _type = None):
-	#
-		"""
+    def _get_sub_entries_title(self, _type = None):
+        """
 Returns the title reflecting the sub entries type.
 
 :param _type: Sub entries type defined
 
 :return: (str) Sub entries title; empty string if not known
 :since:  v0.2.00
-		"""
+        """
 
-		_return = ""
+        _return = ""
 
-		if (not self._is_primary_action()):
-		#
-			if ("type" in self.context):
-			#
-				if (self.context['type'] == DataLinker.SUB_ENTRIES_TYPE_ADDITIONAL_CONTENT): _type = self.context['type']
-			#
-			elif ("title" in self.context): _return = self.context['title']
-		#
+        if (not self._is_primary_action()):
+            if ("type" in self.context):
+                if (self.context['type'] == DataLinker.SUB_ENTRIES_TYPE_ADDITIONAL_CONTENT): _type = self.context['type']
+            elif ("title" in self.context): _return = self.context['title']
+        #
 
-		if (_return == ""):
-		#
-			if (_type == DataLinker.SUB_ENTRIES_TYPE_ADDITIONAL_CONTENT): _return = L10n.get("pas_http_datalinker_sub_entries_additional_content")
-		#
+        if (_return == ""):
+            if (_type == DataLinker.SUB_ENTRIES_TYPE_ADDITIONAL_CONTENT): _return = L10n.get("pas_http_datalinker_sub_entries_additional_content")
+        #
 
-		return _return
-	#
+        return _return
+    #
 
-	def _render_link(self, data):
-	#
-		"""
+    def _render_link(self, data):
+        """
 Renders a link.
 
 :return: (str) Link XHTML
 :since:  v0.2.00
-		"""
+        """
 
-		_return = ""
+        _return = ""
 
-		if ("id" in data and "title" in data):
-		#
-			url = Link().build_url(Link.TYPE_RELATIVE_URL, { "m": "datalinker", "a": "related", "dsd": { "oid": data['id'] } })
+        if ("id" in data and "title" in data):
+            url = Link().build_url(Link.TYPE_RELATIVE_URL, { "m": "datalinker", "a": "related", "dsd": { "oid": data['id'] } })
 
-			xml_parser = XmlParser()
-			_return = "{0}{1}</a>".format(xml_parser.dict_to_xml_item_encoder({ "tag": "a", "attributes": { "href": url } }, False), XHtmlFormatting.escape(data['title']))
-		#
+            xml_parser = XmlParser()
+            _return = "{0}{1}</a>".format(xml_parser.dict_to_xml_item_encoder({ "tag": "a", "attributes": { "href": url } }, False), XHtmlFormatting.escape(data['title']))
+        #
 
-		return _return
-	#
+        return _return
+    #
 #
-
-##j## EOF

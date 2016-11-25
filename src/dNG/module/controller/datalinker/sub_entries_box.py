@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -37,8 +36,7 @@ from dNG.data.text.l10n import L10n
 from .abstract_sub_entries import AbstractSubEntries
 
 class SubEntriesBox(AbstractSubEntries):
-#
-	"""
+    """
 "SubEntriesBox" is a navigation element providing links to child entries.
 
 :author:     direct Netware Group et al.
@@ -48,59 +46,53 @@ class SubEntriesBox(AbstractSubEntries):
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
-	"""
+    """
 
-	def _get_rendered_links(self):
-	#
-		"""
+    def _get_rendered_links(self):
+        """
 Returns a list of rendered links for object children.
 
 :return: (list) Links for the service menu
 :since:  v0.2.00
-		"""
+        """
 
-		_return = [ ]
+        _return = [ ]
 
-		links = [ ]
+        links = [ ]
 
-		if ("parent_id" in self.context
-		    and (self.context.get("id") != self.context['parent_id'])
-		   ):
-		#
-			links.append({ "id": self.context['parent_id'],
-			               "title": self.context.get("parent_title", L10n.get("pas_http_core_level_up"))
-			             })
-		#
+        if ("parent_id" in self.context
+            and (self.context.get("id") != self.context['parent_id'])
+           ):
+            links.append({ "id": self.context['parent_id'],
+                           "title": self.context.get("parent_title", L10n.get("pas_http_core_level_up"))
+                         })
+        #
 
-		if ("id" in self.context): links += self._get_datalinker_entry_links(self.context['id'], hide_inaccessible = True)
+        if ("id" in self.context): links += self._get_datalinker_entry_links(self.context['id'], hide_inaccessible = True)
 
-		for link in links: _return.append(self._render_link(link))
+        for link in links: _return.append(self._render_link(link))
 
-		return _return
-	#
+        return _return
+    #
 
-	def execute_render(self):
-	#
-		"""
+    def execute_render(self):
+        """
 Action for "render"
 
 :since: v0.2.00
-		"""
+        """
 
-		if (self._is_primary_action()): raise TranslatableError("core_access_denied", 403)
+        if (self._is_primary_action()): raise TranslatableError("core_access_denied", 403)
 
-		rendered_links = self._get_rendered_links()
+        rendered_links = self._get_rendered_links()
 
-		if (len(rendered_links) > 0):
-		#
-			title = self._get_sub_entries_title()
+        if (len(rendered_links) > 0):
+            title = self._get_sub_entries_title()
 
-			content = ("" if (title == "") else "<h1>{0}</h1>".format(title))
-			content += "<ul><li>{0}</li></ul>".format("</li>\n<li>".join(rendered_links))
+            content = ("" if (title == "") else "<h1>{0}</h1>".format(title))
+            content += "<ul><li>{0}</li></ul>".format("</li>\n<li>".join(rendered_links))
 
-			self.set_action_result("<nav class='pagecontent_box pagecontent_datalinker_sub_entries_box'>{0}</nav>".format(content))
-		#
-	#
+            self.set_action_result("<nav class='pagecontent_box pagecontent_datalinker_sub_entries_box'>{0}</nav>".format(content))
+        #
+    #
 #
-
-##j## EOF

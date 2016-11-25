@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -48,8 +47,7 @@ try: from dNG.data.session.implementation import Implementation as Session
 except ImportError: Session = None
 
 class DataLinker(SourceCallbacksMixin, Abstract):
-#
-	"""
+    """
 "DataLinker" uses a DataLinker entry to iterate over the sub entries.
 
 :author:     direct Netware Group et al.
@@ -59,167 +57,152 @@ class DataLinker(SourceCallbacksMixin, Abstract):
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
-	"""
+    """
 
-	def __init__(self, entry = None):
-	#
-		"""
+    def __init__(self, entry = None):
+        """
 Constructor __init__(DataLinker)
 
 :param entry: DataLinker entry
 
 :since: v0.2.00
-		"""
+        """
 
-		Abstract.__init__(self)
-		SourceCallbacksMixin.__init__(self)
+        Abstract.__init__(self)
+        SourceCallbacksMixin.__init__(self)
 
-		self.entry = entry
-		"""
+        self.entry = entry
+        """
 DataLinker entry to iterate
-		"""
-		self.session = None
-		"""
+        """
+        self.session = None
+        """
 Session instance used to verify access permissions
-		"""
-		self.session_loaded = (Session is None)
-		"""
+        """
+        self.session_loaded = (Session is None)
+        """
 True after the Session instance has been cached
-		"""
-		self.sub_entries_count = None
-		"""
+        """
+        self.sub_entries_count = None
+        """
 DataLinker sub entries count
-		"""
-		self.sub_entry_iterator = None
-		"""
+        """
+        self.sub_entry_iterator = None
+        """
 DataLinker sub entry iterator
-		"""
+        """
 
-		self.supported_features['sorting'] = True
-	#
+        self.supported_features['sorting'] = True
+    #
 
-	def __next__(self):
-	#
-		"""
+    def __next__(self):
+        """
 python.org: Return the next item from the container.
 
 :return: (object) Result object
 :since:  v0.2.00
-		"""
+        """
 
-		if (self.sub_entry_iterator is None): self._init_iterator()
+        if (self.sub_entry_iterator is None): self._init_iterator()
 
-		try:
-		#
-			sub_entry = next(self.sub_entry_iterator)
+        try:
+            sub_entry = next(self.sub_entry_iterator)
 
-			return (DataLinkerRow(sub_entry)
-			        if (OwnableInstance is None
-			            or (not isinstance(sub_entry, OwnableInstance))
-			            or sub_entry.is_readable_for_session_user(self._get_session())
-			           ) else
-			        InaccessibleRow({ "id": "",
-			                          "sub_entries": 0,
-			                          "sub_entries_type": 0,
-			                          "time_sortable": time(),
-			                          "symbol": "",
-			                          "title": L10n.get("pas_http_datalinker_entry_inaccessible"),
-			                          "tag": "",
-			                          "views_count": False,
-			                          "views": 0
-			                        })
-			       )
-		#
-		except StopIteration:
-		#
-			self.sub_entry_iterator = None
-			raise
-		#
-	#
+            return (DataLinkerRow(sub_entry)
+                    if (OwnableInstance is None
+                        or (not isinstance(sub_entry, OwnableInstance))
+                        or sub_entry.is_readable_for_session_user(self._get_session())
+                       ) else
+                    InaccessibleRow({ "id": "",
+                                      "sub_entries": 0,
+                                      "sub_entries_type": 0,
+                                      "time_sortable": time(),
+                                      "symbol": "",
+                                      "title": L10n.get("pas_http_datalinker_entry_inaccessible"),
+                                      "tag": "",
+                                      "views_count": False,
+                                      "views": 0
+                                    })
+                   )
+        except StopIteration:
+            self.sub_entry_iterator = None
+            raise
+        #
+    #
 
-	def get_row_count(self):
-	#
-		"""
+    def get_row_count(self):
+        """
 Returns the number of rows.
 
 :return: (int) Number of rows
 :since:  v0.2.00
-		"""
+        """
 
-		if (self.sub_entries_count is None):
-		#
-			source_row_count_callback = (self.entry.get_sub_entries_count if (self.source_row_count_callback is None) else self.source_row_count_callback)
-			self.sub_entries_count = source_row_count_callback()
-		#
+        if (self.sub_entries_count is None):
+            source_row_count_callback = (self.entry.get_sub_entries_count if (self.source_row_count_callback is None) else self.source_row_count_callback)
+            self.sub_entries_count = source_row_count_callback()
+        #
 
-		return self.sub_entries_count
-	#
+        return self.sub_entries_count
+    #
 
-	def _get_session(self):
-	#
-		"""
+    def _get_session(self):
+        """
 Returns the session used to verify access permissions.
-		"""
+        """
 
-		if (not self.session_loaded):
-		#
-			self.session = Session.load(session_create = False)
-			self.session_loaded = True
-		#
+        if (not self.session_loaded):
+            self.session = Session.load(session_create = False)
+            self.session_loaded = True
+        #
 
-		return self.session
-	#
+        return self.session
+    #
 
-	def _init_iterator(self):
-	#
-		"""
+    def _init_iterator(self):
+        """
 Initializes the iterator on demand.
 
 :since: v0.2.00
-		"""
+        """
 
-		sort_list = None
+        sort_list = None
 
-		if (len(self.sort_list) > 0): sort_list = self.sort_list
-		elif (self.default_sort_definition is not None): sort_list = [ self.default_sort_definition ]
+        if (len(self.sort_list) > 0): sort_list = self.sort_list
+        elif (self.default_sort_definition is not None): sort_list = [ self.default_sort_definition ]
 
-		if (sort_list is not None):
-		#
-			sort_definition = SortDefinition()
+        if (sort_list is not None):
+            sort_definition = SortDefinition()
 
-			for sort_value in sort_list:
-			#
-				sort_definition.append(sort_value['key'],
-				                       (SortDefinition.DESCENDING
-				                        if (sort_value['direction'] == DataLinker.SORT_DESCENDING) else
-				                        SortDefinition.ASCENDING
-				                       )
-				                      )
-			#
+            for sort_value in sort_list:
+                sort_definition.append(sort_value['key'],
+                                       (SortDefinition.DESCENDING
+                                        if (sort_value['direction'] == DataLinker.SORT_DESCENDING) else
+                                        SortDefinition.ASCENDING
+                                       )
+                                      )
+            #
 
-			self.entry.set_sort_definition(sort_definition, self.sort_context)
-		#
+            self.entry.set_sort_definition(sort_definition, self.sort_context)
+        #
 
-		source_rows_callback = (self.entry.get_sub_entries if (self.source_rows_callback is None) else self.source_rows_callback)
-		self.sub_entry_iterator = source_rows_callback(self.offset, self.limit)
-	#
+        source_rows_callback = (self.entry.get_sub_entries if (self.source_rows_callback is None) else self.source_rows_callback)
+        self.sub_entry_iterator = source_rows_callback(self.offset, self.limit)
+    #
 
-	def _is_sort_key_known(self, key):
-	#
-		"""
+    def _is_sort_key_known(self, key):
+        """
 Checks if the given sort key is known.
 
 :param key: Key used internally
 
 :return: (bool) Returns true if the sort key is known
 :since:  v0.2.00
-		"""
+        """
 
-		_return = Abstract._is_sort_key_known(self, key)
-		if (not _return): _return = self.entry.is_data_attribute_defined(key)
+        _return = Abstract._is_sort_key_known(self, key)
+        if (not _return): _return = self.entry.is_data_attribute_defined(key)
 
-		return _return
-	#
+        return _return
+    #
 #
-
-##j## EOF

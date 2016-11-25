@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -34,8 +33,7 @@ https://www.direct-netware.de/redirect?licenses;gpl
 from .abstract_row import AbstractRow
 
 class DataLinkerRow(AbstractRow):
-#
-	"""
+    """
 "DataLinkerRow" provides properties mapped to DataLinker entry attributes.
 
 :author:     direct Netware Group et al.
@@ -45,51 +43,46 @@ class DataLinkerRow(AbstractRow):
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
-	"""
+    """
 
-	def __init__(self, entry):
-	#
-		"""
+    def __init__(self, entry):
+        """
 Constructor __init__(DataLinkerRow)
 
 :param entry: DataLinker entry
 
 :since: v0.2.00
-		"""
+        """
 
-		self.entry = entry
-		"""
+        self.entry = entry
+        """
 DataLinker entry to iterate
-		"""
-	#
+        """
+    #
 
-	def __contains__(self, item):
-	#
-		"""
+    def __contains__(self, item):
+        """
 python.org: Called to implement membership test operators.
 
 :param item: Item to be looked up
 
 :return: (bool) True if "__getitem__()" call will be successfully
 :since:  v0.2.00
-		"""
+        """
 
-		return (type(item) is str)
-	#
+        return (type(item) is str)
+    #
 
-	def __getitem__(self, key):
-	#
-		"""
+    def __getitem__(self, key):
+        """
 python.org: Called to implement evaluation of self[key].
 
 :param name: Attribute name
 
 :return: (mixed) Attribute value
 :since:  v0.2.00
-		"""
+        """
 
-		return self.entry.get_data_attributes(key)[key]
-	#
+        return self.entry.get_data_attributes(key)[key]
+    #
 #
-
-##j## EOF

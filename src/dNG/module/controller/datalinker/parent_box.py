@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -40,8 +39,7 @@ from dNG.module.controller.abstract_http import AbstractHttp as AbstractHttpCont
 from dNG.runtime.value_exception import ValueException
 
 class ParentBox(AbstractHttpController):
-#
-	"""
+    """
 "ParentBox" is a navigation element providing a link to the parent entry.
 
 :author:     direct Netware Group et al.
@@ -51,56 +49,52 @@ class ParentBox(AbstractHttpController):
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
-	"""
+    """
 
-	def __init__(self):
-	#
-		"""
+    def __init__(self):
+        """
 Constructor __init__(ParentBox)
 
 :since: v0.2.00
-		"""
+        """
 
-		AbstractHttpController.__init__(self)
+        AbstractHttpController.__init__(self)
 
-		L10n.init("pas_http_datalinker")
-	#
+        L10n.init("pas_http_datalinker")
+    #
 
-	def execute_render(self):
-	#
-		"""
+    def execute_render(self):
+        """
 Action for "render"
 
 :since: v0.2.00
-		"""
+        """
 
-		if (self._is_primary_action()): raise TranslatableError("core_access_denied", 403)
+        if (self._is_primary_action()): raise TranslatableError("core_access_denied", 403)
 
-		if ("id" not in self.context): raise ValueException("Required DataLinker ID is missing")
+        if ("id" not in self.context): raise ValueException("Required DataLinker ID is missing")
 
-		title = self.context.get("title", "")
+        title = self.context.get("title", "")
 
-		is_title_empty = (title == "")
-		url = Link().build_url(Link.TYPE_RELATIVE_URL, { "m": "datalinker", "a": "related", "dsd": { "oid": self.context['id'] } })
+        is_title_empty = (title == "")
+        url = Link().build_url(Link.TYPE_RELATIVE_URL, { "m": "datalinker", "a": "related", "dsd": { "oid": self.context['id'] } })
 
-		link = XmlParser().dict_to_xml_item_encoder({ "tag": "a",
-		                                              "value": (L10n.get("pas_http_core_level_up")
-		                                                        if (is_title_empty) else
-		                                                        XHtmlFormatting.escape(title)
-		                                                       ),
-		                                              "attributes": { "href": url }
-		                                            })
+        link = XmlParser().dict_to_xml_item_encoder({ "tag": "a",
+                                                      "value": (L10n.get("pas_http_core_level_up")
+                                                                if (is_title_empty) else
+                                                                XHtmlFormatting.escape(title)
+                                                               ),
+                                                      "attributes": { "href": url }
+                                                    })
 
-		content = (link
-		           if (is_title_empty) else
-		           "{0}{1}{2}".format(L10n.get("pas_http_datalinker_view_parent_1"),
-		                              link,
-		                              L10n.get("pas_http_datalinker_view_parent_2")
-		                             )
-		          )
+        content = (link
+                   if (is_title_empty) else
+                   "{0}{1}{2}".format(L10n.get("pas_http_datalinker_view_parent_1"),
+                                      link,
+                                      L10n.get("pas_http_datalinker_view_parent_2")
+                                     )
+                  )
 
-		self.set_action_result("<p class='pagecontent_box pagecontent_datalinker_parent_box'>{0}</p>".format(content))
-	#
+        self.set_action_result("<p class='pagecontent_box pagecontent_datalinker_parent_box'>{0}</p>".format(content))
+    #
 #
-
-##j## EOF
